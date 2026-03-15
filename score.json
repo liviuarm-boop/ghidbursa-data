@@ -1,0 +1,35 @@
+{
+  "score": 71.4,
+  "label_ro": "Lacomie",
+  "label_en": "Greed",
+  "updated": "2026-03-15T23:39:26Z",
+  "updated_ro": "15 Mar 2026, 23:39",
+  "indicators": {
+    "momentum": {
+      "score": null,
+      "label": "N/A",
+      "weight": "40%",
+      "description": "Pretul BET vs media 125 zile"
+    },
+    "volatility": {
+      "score": null,
+      "label": "N/A",
+      "weight": "30%",
+      "description": "Volatilitate anualizata 20 zile (inversata)"
+    },
+    "breadth": {
+      "score": 71.4,
+      "label": "Lacomie",
+      "weight": "30%",
+      "description": "% actiuni BET peste SMA 50 zile",
+      "above_sma50": 10,
+      "total_stocks": 14
+    }
+  },
+  "data_quality": {
+    "bet_days": 0,
+    "components_ok": 14,
+    "components_total": 14
+  },
+  "disclaimer": "Scor orientativ bazat pe date publice. Nu constituie consultanta financiara."
+}
