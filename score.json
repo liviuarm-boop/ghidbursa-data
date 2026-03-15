@@ -1,21 +1,26 @@
 {
-  "score": 71.4,
+  "score": 74.2,
   "label_ro": "Lacomie",
   "label_en": "Greed",
-  "updated": "2026-03-15T23:39:26Z",
-  "updated_ro": "15 Mar 2026, 23:39",
+  "updated": "2026-03-15T23:53:10Z",
+  "updated_ro": "15 Mar 2026, 23:53",
+  "method": "3 indicatori completi",
   "indicators": {
     "momentum": {
-      "score": null,
-      "label": "N/A",
+      "score": 100.0,
+      "label": "Lacomie extrema",
       "weight": "40%",
-      "description": "Pretul BET vs media 125 zile"
+      "description": "Pretul BET vs SMA 125 zile",
+      "price": 157.59,
+      "sma_125": 134.97,
+      "pct_vs_sma": 16.76
     },
     "volatility": {
-      "score": null,
-      "label": "N/A",
+      "score": 42.7,
+      "label": "Neutru",
       "weight": "30%",
-      "description": "Volatilitate anualizata 20 zile (inversata)"
+      "description": "Volatilitate anualizata 20 zile",
+      "annualized_vol_pct": 25.05
     },
     "breadth": {
       "score": 71.4,
@@ -27,7 +32,8 @@
     }
   },
   "data_quality": {
-    "bet_days": 0,
+    "bet_source": "stooq",
+    "bet_days": 186,
     "components_ok": 14,
     "components_total": 14
   },
