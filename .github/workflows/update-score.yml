@@ -1,0 +1,43 @@
+name: Update BVB Fear & Greed Score
+
+on:
+  schedule:
+    # 16:30 UTC = 18:30 ora Bucuresti — dupa inchiderea BVB (16:30 EET)
+    - cron: '30 14 * * 1-5'
+  workflow_dispatch:
+    # Buton manual in GitHub Actions — util pentru primul test
+
+permissions:
+  contents: write
+
+jobs:
+  update-score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install yfinance pandas numpy
+
+      - name: Run score calculator
+        run: python scripts/fetch_data.py
+
+      - name: Commit score.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add score.json
+          # Commit doar daca s-a schimbat ceva
+          git diff --staged --quiet || \
+            git commit -m "chore: update score.json $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git push
