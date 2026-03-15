@@ -1,261 +1,160 @@
 #!/usr/bin/env python3
 """
-BVB Fear & Greed Index Calculator
-Rulat zilnic de GitHub Actions. Scrie score.json in radacina repo-ului.
+BVB Fear & Greed Index Calculator v2
+- BET index: Stooq.com (bet.xb) — mai fiabil decat Yahoo
+- Componente: Yahoo Finance (.RO) — deja functioneaza
+- Fallback: reconstruieste BET din componente ponderate
 """
-import json
-import datetime
-import sys
+import json, datetime, sys, io, urllib.request
 import numpy as np
+import pandas as pd
 
 try:
     import yfinance as yf
 except ImportError:
-    print("ERROR: yfinance not installed", file=sys.stderr)
-    sys.exit(1)
+    print("ERROR: yfinance not installed", file=sys.stderr); sys.exit(1)
 
-# ── DATE ──────────────────────────────────────────────────────
-BET_TICKER = "^BET.RO"
+STOOQ_BET = "https://stooq.com/q/d/l/?s=bet.xb&i=d"
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
 
-# Componente BET cu ticker Yahoo Finance
-COMPONENTS = [
-    "TLV.RO",   # Banca Transilvania
-    "H2O.RO",   # Hidroelectrica
-    "SNP.RO",   # OMV Petrom
-    "SNG.RO",   # Romgaz
-    "SNN.RO",   # Nuclearelectrica
-    "BRD.RO",   # BRD Groupe SG
-    "EL.RO",    # Electrica
-    "TGN.RO",   # Transgaz
-    "TEL.RO",   # Transelectrica
-    "DIGI.RO",  # Digi Communications
-    "M.RO",     # MedLife
-    "ONE.RO",   # One United Properties
-    "TTS.RO",   # Transport Trade Services
-    "FP.RO",    # Fondul Proprietatea
-]
+COMPONENTS = {
+    "H2O.RO": 0.22, "TLV.RO": 0.18, "SNP.RO": 0.12, "SNG.RO": 0.10,
+    "SNN.RO": 0.08, "BRD.RO": 0.07, "EL.RO":  0.06, "TGN.RO": 0.04,
+    "TEL.RO": 0.03, "DIGI.RO":0.03, "M.RO":   0.02, "ONE.RO": 0.02,
+    "TTS.RO": 0.02, "FP.RO":  0.01,
+}
 
-# ── DOWNLOAD ──────────────────────────────────────────────────
-def download_ticker(ticker, period="9mo"):
-    """Descarca date istorice pentru un ticker. Returneaza DataFrame sau None."""
+def dl_stooq():
     try:
-        df = yf.download(
-            ticker,
-            period=period,
-            progress=False,
-            timeout=30,
-            auto_adjust=True
-        )
-        if df is None or len(df) < 10:
-            return None
-        # Flatten MultiIndex columns daca exista
-        if hasattr(df.columns, 'levels'):
-            df.columns = df.columns.get_level_values(0)
+        req = urllib.request.Request(STOOQ_BET, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            raw = r.read().decode("utf-8")
+        df = pd.read_csv(io.StringIO(raw), parse_dates=["Date"])
+        df = df.sort_values("Date").reset_index(drop=True)
+        if len(df) < 10: return None
+        close = df.set_index("Date")["Close"]
+        print(f"  + Stooq BET: {len(close)} zile, last={close.iloc[-1]:.2f}")
+        return close
+    except Exception as e:
+        print(f"  - Stooq: {e}", file=sys.stderr); return None
+
+def dl_yf(ticker, period="9mo"):
+    try:
+        df = yf.download(ticker, period=period, progress=False, timeout=30, auto_adjust=True)
+        if df is None or len(df) < 10: return None
+        if hasattr(df.columns, "levels"): df.columns = df.columns.get_level_values(0)
         return df
     except Exception as e:
-        print(f"  WARN: {ticker} failed — {e}", file=sys.stderr)
-        return None
+        print(f"  - {ticker}: {e}", file=sys.stderr); return None
 
-# ── INDICATORI ────────────────────────────────────────────────
+def reconstruct_bet(stocks):
+    series_list, weights_list = [], []
+    for ticker, weight in COMPONENTS.items():
+        df = stocks.get(ticker)
+        if df is None or len(df) < 50: continue
+        norm = df["Close"] / df["Close"].iloc[0] * 100
+        series_list.append(norm); weights_list.append(weight)
+    if not series_list: return None
+    combined = pd.concat(series_list, axis=1).dropna()
+    if len(combined) < 50: return None
+    w = np.array(weights_list[:len(series_list)]); w = w / w.sum()
+    result = pd.Series(combined.values @ w, index=combined.index)
+    print(f"  + BET reconstruit din {len(series_list)} componente: {len(result)} zile")
+    return result
 
-def indicator_momentum(close_series, window=125):
-    """
-    Momentum: pretul BET vs media mobila pe 125 zile.
-    Peste medie = lacomie, sub medie = frica.
-    Scor 0-100.
-    """
-    if close_series is None or len(close_series) < window:
-        return None, {}
+def momentum(close, n=125):
+    if close is None or len(close) < n: return None, {}
+    p = float(close.iloc[-1]); sma = float(close.iloc[-n:].mean())
+    pct = (p - sma) / sma * 100
+    return round(float(np.clip((pct+15)/30*100, 0, 100)), 1), {
+        "price": round(p,2), "sma_125": round(sma,2), "pct_vs_sma": round(pct,2)}
 
-    price   = float(close_series.iloc[-1])
-    sma     = float(close_series.iloc[-window:].mean())
-    pct_diff = (price - sma) / sma * 100  # ex: +8.3% sau -5.1%
+def volatility(close, n=20):
+    if close is None or len(close) < n+1: return None, {}
+    ann = float(close.pct_change().dropna().iloc[-n:].std()) * (252**0.5) * 100
+    return round(float(np.clip((40-ann)/35*100, 0, 100)), 1), {"annualized_vol_pct": round(ann,2)}
 
-    # Normalizam: -15% = scor 0, +15% = scor 100
-    score = float(np.clip((pct_diff + 15) / 30 * 100, 0, 100))
-
-    return round(score, 1), {
-        "price":   round(price, 2),
-        "sma_125": round(sma, 2),
-        "pct_vs_sma": round(pct_diff, 2),
-    }
-
-
-def indicator_volatility(close_series, window=20):
-    """
-    Volatilitate: deviatia standard anualizata pe 20 zile.
-    Volatilitate mare = frica, mica = lacomie.
-    Scor 0-100 (inversat).
-    """
-    if close_series is None or len(close_series) < window + 1:
-        return None, {}
-
-    returns = close_series.pct_change().dropna().iloc[-window:]
-    annual_vol = float(returns.std()) * (252 ** 0.5) * 100  # in procente
-
-    # Normalizam (inversat): 40%+ volatilitate = scor 0, 5% = scor 100
-    score = float(np.clip((40 - annual_vol) / 35 * 100, 0, 100))
-
-    return round(score, 1), {
-        "annualized_vol_pct": round(annual_vol, 2),
-    }
-
-
-def indicator_breadth(stocks_data, window=50):
-    """
-    Market breadth: cate actiuni din BET sunt peste SMA 50 zile.
-    Majoritate deasupra = lacomie, sub = frica.
-    Scor 0-100 direct (procentul celor de deasupra SMA).
-    """
-    above = 0
-    total = 0
-
-    for ticker, df in stocks_data.items():
-        if df is None or len(df) < window:
-            continue
-        close = df["Close"]
-        current   = float(close.iloc[-1])
-        sma_50    = float(close.iloc[-window:].mean())
-        if current > sma_50:
-            above += 1
+def breadth(stocks, n=50):
+    above = total = 0
+    for df in stocks.values():
+        if df is None or len(df) < n: continue
+        c = df["Close"]
+        if float(c.iloc[-1]) > float(c.iloc[-n:].mean()): above += 1
         total += 1
+    if not total: return None, {}
+    return round(above/total*100, 1), {"above_sma50": above, "total_stocks": total}
 
-    if total == 0:
-        return None, {}
-
-    pct_above = (above / total) * 100
-    return round(pct_above, 1), {
-        "above_sma50": above,
-        "total_stocks": total,
-    }
-
-
-# ── ETICHETA ──────────────────────────────────────────────────
-
-def score_to_label(score):
-    if score is None: return "N/A"
-    if score <= 20:   return "Frica extrema"
-    if score <= 40:   return "Frica"
-    if score <= 60:   return "Neutru"
-    if score <= 80:   return "Lacomie"
+def label_ro(s):
+    if s is None: return "N/A"
+    if s <= 20: return "Frica extrema"
+    if s <= 40: return "Frica"
+    if s <= 60: return "Neutru"
+    if s <= 80: return "Lacomie"
     return "Lacomie extrema"
 
-
-def score_to_label_en(score):
-    if score is None: return "N/A"
-    if score <= 20:   return "Extreme Fear"
-    if score <= 40:   return "Fear"
-    if score <= 60:   return "Neutral"
-    if score <= 80:   return "Greed"
+def label_en(s):
+    if s is None: return "N/A"
+    if s <= 20: return "Extreme Fear"
+    if s <= 40: return "Fear"
+    if s <= 60: return "Neutral"
+    if s <= 80: return "Greed"
     return "Extreme Greed"
 
-
-# ── MAIN ──────────────────────────────────────────────────────
-
 def main():
-    print("=" * 50)
-    print("BVB Fear & Greed — calcul scor")
-    print("=" * 50)
+    print("="*55 + "\nBVB Fear & Greed v2\n" + "="*55)
 
-    # 1. Descarca BET index
-    print(f"\nDescarc {BET_TICKER}...")
-    bet_df = download_ticker(BET_TICKER)
-    bet_close = bet_df["Close"] if bet_df is not None else None
-    n_bet = len(bet_df) if bet_df is not None else 0
-    print(f"  -> {n_bet} zile de date")
-
-    # 2. Descarca componente
-    print(f"\nDescarc {len(COMPONENTS)} componente BET...")
+    print("\n[1] Componente BET (Yahoo Finance)...")
     stocks = {}
-    for ticker in COMPONENTS:
-        df = download_ticker(ticker)
-        if df is not None:
-            stocks[ticker] = df
-            print(f"  + {ticker}: {len(df)} zile")
-        else:
-            stocks[ticker] = None
-            print(f"  - {ticker}: ESUAT")
+    for t in COMPONENTS:
+        df = dl_yf(t)
+        stocks[t] = df
+        print(f"  {'+'if df is not None else '-'} {t}: {len(df) if df is not None else 'FAIL'}")
+    ok = sum(1 for v in stocks.values() if v is not None)
+    print(f"  OK: {ok}/{len(COMPONENTS)}")
 
-    ok_count = sum(1 for v in stocks.values() if v is not None)
-    print(f"\nDate OK: {ok_count}/{len(COMPONENTS)} componente")
+    print("\n[2] BET index (Stooq)...")
+    bet = dl_stooq()
+    if bet is None:
+        print("  Stooq esuat, reconstruiesc din componente...")
+        bet = reconstruct_bet(stocks)
+    bet_source = "stooq" if bet is not None and "reconstruit" not in str(bet) else "reconstructed" if bet is not None else "unavailable"
 
-    # 3. Calculeaza indicatori
-    print("\nCalculez indicatori...")
+    print("\n[3] Indicatori...")
+    ms, md = momentum(bet)
+    vs, vd = volatility(bet)
+    bs, bd = breadth(stocks)
+    print(f"  Momentum:     {ms} — {label_ro(ms)}")
+    print(f"  Volatilitate: {vs} — {label_ro(vs)}")
+    print(f"  Breadth:      {bs} — {label_ro(bs)}")
 
-    mom_score, mom_data = indicator_momentum(bet_close)
-    vol_score, vol_data = indicator_volatility(bet_close)
-    bre_score, bre_data = indicator_breadth(stocks)
-
-    print(f"  Momentum:    {mom_score} — {score_to_label(mom_score)}")
-    print(f"  Volatilitate:{vol_score} — {score_to_label(vol_score)}")
-    print(f"  Breadth:     {bre_score} — {score_to_label(bre_score)}")
-
-    # 4. Scor compozit (ponderat)
-    weights = [
-        (mom_score, 0.40),  # momentum — cel mai predictiv
-        (vol_score, 0.30),  # volatilitate
-        (bre_score, 0.30),  # breadth
-    ]
-    valid = [(s, w) for s, w in weights if s is not None]
-
-    if valid:
-        composite = sum(s * w for s, w in valid) / sum(w for _, w in valid)
-        composite = round(composite, 1)
+    if ms is not None and vs is not None and bs is not None:
+        w = [(ms,0.40),(vs,0.30),(bs,0.30)]; method = "3 indicatori completi"
+    elif bs is not None:
+        w = [(bs,1.0)]; method = "breadth (BET indisponibil)"
     else:
-        composite = None
+        w = []; method = "fara date"
 
-    print(f"\n  SCOR FINAL:  {composite} — {score_to_label(composite)}")
+    valid = [(s,wt) for s,wt in w if s is not None]
+    comp = round(sum(s*wt for s,wt in valid)/sum(wt for _,wt in valid),1) if valid else None
+    print(f"\n  SCOR: {comp} — {label_ro(comp)} ({method})")
 
-    # 5. Scrie score.json
-    output = {
-        "score":     composite,
-        "label_ro":  score_to_label(composite),
-        "label_en":  score_to_label_en(composite),
-        "updated":   datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+    out = {
+        "score": comp, "label_ro": label_ro(comp), "label_en": label_en(comp),
+        "updated": datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
         "updated_ro": datetime.datetime.now().strftime("%d %b %Y, %H:%M"),
+        "method": method,
         "indicators": {
-            "momentum": {
-                "score": mom_score,
-                "label": score_to_label(mom_score),
-                "weight": "40%",
-                "description": "Pretul BET vs media 125 zile",
-                **mom_data,
-            },
-            "volatility": {
-                "score": vol_score,
-                "label": score_to_label(vol_score),
-                "weight": "30%",
-                "description": "Volatilitate anualizata 20 zile (inversata)",
-                **vol_data,
-            },
-            "breadth": {
-                "score": bre_score,
-                "label": score_to_label(bre_score),
-                "weight": "30%",
-                "description": "% actiuni BET peste SMA 50 zile",
-                **bre_data,
-            },
+            "momentum":   {"score": ms, "label": label_ro(ms), "weight": "40%", "description": "Pretul BET vs SMA 125 zile", **md},
+            "volatility": {"score": vs, "label": label_ro(vs), "weight": "30%", "description": "Volatilitate anualizata 20 zile", **vd},
+            "breadth":    {"score": bs, "label": label_ro(bs), "weight": "30%", "description": "% actiuni BET peste SMA 50 zile", **bd},
         },
-        "data_quality": {
-            "bet_days":          n_bet,
-            "components_ok":     ok_count,
-            "components_total":  len(COMPONENTS),
-        },
+        "data_quality": {"bet_source": bet_source, "bet_days": len(bet) if bet is not None else 0, "components_ok": ok, "components_total": len(COMPONENTS)},
         "disclaimer": "Scor orientativ bazat pe date publice. Nu constituie consultanta financiara.",
     }
-
     with open("score.json", "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-
-    print(f"\nscore.json scris cu succes.")
-    print("=" * 50)
-    print(json.dumps(output, ensure_ascii=False, indent=2))
-
-    # Fail daca nu avem niciun scor valid (sa detectam problemele in CI)
-    if composite is None:
-        print("\nERROR: Nu s-a putut calcula scorul!", file=sys.stderr)
-        sys.exit(1)
-
+        json.dump(out, f, ensure_ascii=False, indent=2)
+    print(f"\nscore.json scris.")
+    if comp is None: print("ERROR: scor null!", file=sys.stderr); sys.exit(1)
 
 if __name__ == "__main__":
     main()
