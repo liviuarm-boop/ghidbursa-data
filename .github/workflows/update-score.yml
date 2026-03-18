@@ -2,11 +2,8 @@ name: Update BVB Fear & Greed Score
 
 on:
   schedule:
-    # 08:00 UTC = 10:00 Bucuresti — dimineata inainte de piata
     - cron: '0 8 * * 1-5'
-    # 14:45 UTC = 16:45 Bucuresti — 15 min dupa inchiderea BVB
     - cron: '45 14 * * 1-5'
-    # 16:00 UTC = 18:00 Bucuresti — backup daca Yahoo intarzie datele
     - cron: '0 16 * * 1-5'
   workflow_dispatch:
 
@@ -28,9 +25,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install yfinance pandas numpy
+        run: pip install --upgrade pip yfinance pandas numpy
 
       - name: Run score calculator
         run: python scripts/fetch_data.py
@@ -40,28 +35,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add score.json
-          git diff --staged --quiet || \
-            git commit -m "chore: update score.json $(date -u +'%Y-%m-%d %H:%M UTC')"
+          git diff --staged --quiet || git commit -m "chore: update score.json $(date -u +'%Y-%m-%d %H:%M UTC')"
           git pull --rebase origin main && git push
-
-      - name: Notify on failure
-        if: failure()
-        run: |
-          echo "WORKFLOW FAILED"
-          exit 1
-```
-
-4. Commit directly to main.
-
----
-
-### Test it immediately
-
-After both files are saved: **Actions tab** → **"Update BVB Fear & Greed Score"** → **"Run workflow"** → watch the logs.
-
-In the logs you'll now see printed output like:
-```
-Momentum:     67.3 — Lacomie
-Volatilitate: 71.0 — Lacomie  
-Breadth:      85.7 — Lacomie extrema
-SCOR: 73.8 — Lacomie
