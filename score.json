@@ -1,9 +1,9 @@
 {
-  "score": 70.8,
+  "score": 68.9,
   "label_ro": "Lacomie",
   "label_en": "Greed",
-  "updated": "2026-03-17T17:47:46Z",
-  "updated_ro": "17 Mar 2026, 17:47",
+  "updated": "2026-03-18T18:08:58Z",
+  "updated_ro": "18 Mar 2026, 18:08",
   "method": "3 indicatori completi",
   "indicators": {
     "momentum": {
@@ -11,23 +11,23 @@
       "label": "Lacomie extrema",
       "weight": "40%",
       "description": "Pretul BET vs SMA 125 zile",
-      "price": 154.91,
-      "sma_125": 133.37,
-      "pct_vs_sma": 16.15
+      "price": 154.89,
+      "sma_125": 133.68,
+      "pct_vs_sma": 15.86
     },
     "volatility": {
-      "score": 45.5,
+      "score": 46.4,
       "label": "Neutru",
       "weight": "30%",
       "description": "Volatilitate anualizata 20 zile",
-      "annualized_vol_pct": 24.07
+      "annualized_vol_pct": 23.75
     },
     "breadth": {
-      "score": 57.1,
+      "score": 50.0,
       "label": "Neutru",
       "weight": "30%",
       "description": "% actiuni BET peste SMA 50 zile",
-      "above_sma50": 8,
+      "above_sma50": 7,
       "total_stocks": 14
     }
   },
