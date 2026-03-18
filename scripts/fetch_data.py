@@ -186,7 +186,7 @@ def main():
         "label_ro":   label_ro(comp),
         "label_en":   label_en(comp),
         "updated":    datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "updated_ro": datetime.datetime.now().strftime("%d %b %Y, %H:%M"),
+        "updated_ro": datetime.datetime.now().strftime("%d %b %Y"),
         "method":     method,
         "indicators": {
             "momentum":   {"score": ms, "label": label_ro(ms), "weight": "40%",
