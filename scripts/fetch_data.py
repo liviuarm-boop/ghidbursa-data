@@ -1,3 +1,5 @@
+Output
+
 #!/usr/bin/env python3
 """
 BVB Fear & Greed Index Calculator v2
@@ -52,13 +54,14 @@ def reconstruct_bet(stocks):
     for ticker, weight in COMPONENTS.items():
         df = stocks.get(ticker)
         if df is None or len(df) < 50: continue
-        norm = df["Close"] / df["Close"].iloc[0] * 100
+        norm = df["Close"] / df["Close"].iloc[0]
         series_list.append(norm); weights_list.append(weight)
     if not series_list: return None
     combined = pd.concat(series_list, axis=1).dropna()
     if len(combined) < 50: return None
     w = np.array(weights_list[:len(series_list)]); w = w / w.sum()
-    result = pd.Series(combined.values @ w, index=combined.index)
+    # Result is a weighted ratio starting near 1.0 at period start
+    result = pd.Series(combined.values @ w, index=combined.index) * 100
     print(f"  + BET reconstruit din {len(series_list)} componente: {len(result)} zile")
     return result
 
@@ -66,7 +69,7 @@ def momentum(close, n=125):
     if close is None or len(close) < n: return None, {}
     p = float(close.iloc[-1]); sma = float(close.iloc[-n:].mean())
     pct = (p - sma) / sma * 100
-    return round(float(np.clip((pct+15)/30*100, 0, 100)), 1), {
+    return round(float(np.clip((pct+30)/60*100, 0, 100)), 1), {
         "price": round(p,2), "sma_125": round(sma,2), "pct_vs_sma": round(pct,2)}
 
 def volatility(close, n=20):
