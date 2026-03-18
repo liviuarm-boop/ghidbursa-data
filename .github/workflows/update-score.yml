@@ -2,10 +2,13 @@ name: Update BVB Fear & Greed Score
 
 on:
   schedule:
-    # 16:30 UTC = 18:30 ora Bucuresti — dupa inchiderea BVB (16:30 EET)
-    - cron: '30 14 * * 1-5'
+    # 08:00 UTC = 10:00 Bucuresti — dimineata inainte de piata
+    - cron: '0 8 * * 1-5'
+    # 14:45 UTC = 16:45 Bucuresti — 15 min dupa inchiderea BVB
+    - cron: '45 14 * * 1-5'
+    # 16:00 UTC = 18:00 Bucuresti — backup daca Yahoo intarzie datele
+    - cron: '0 16 * * 1-5'
   workflow_dispatch:
-    # Buton manual in GitHub Actions — util pentru primul test
 
 permissions:
   contents: write
@@ -37,7 +40,28 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add score.json
-          # Commit doar daca s-a schimbat ceva
           git diff --staged --quiet || \
             git commit -m "chore: update score.json $(date -u +'%Y-%m-%d %H:%M UTC')"
           git pull --rebase origin main && git push
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "WORKFLOW FAILED"
+          exit 1
+```
+
+4. Commit directly to main.
+
+---
+
+### Test it immediately
+
+After both files are saved: **Actions tab** → **"Update BVB Fear & Greed Score"** → **"Run workflow"** → watch the logs.
+
+In the logs you'll now see printed output like:
+```
+Momentum:     67.3 — Lacomie
+Volatilitate: 71.0 — Lacomie  
+Breadth:      85.7 — Lacomie extrema
+SCOR: 73.8 — Lacomie
