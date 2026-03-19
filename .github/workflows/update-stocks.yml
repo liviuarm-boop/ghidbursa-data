@@ -2,17 +2,15 @@ name: Update BVB Stock Data
 
 on:
   schedule:
-    # Rulează zilnic la 10:30 ora României (08:30 UTC) — după deschiderea BVB
     - cron: '30 8 * * 1-5'
-  workflow_dispatch:  # permite și trigger manual din GitHub UI
+  workflow_dispatch:
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    
     permissions:
-      contents: write  # necesar pentru git push
-    
+      contents: write
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -22,13 +20,16 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Install dependencies
+        run: pip install yfinance
+
       - name: Run fetch script
         run: python fetch_stocks.py
 
-      - name: Commit & push data
+      - name: Commit & push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/stocks.json
-          git diff --staged --quiet || git commit -m "chore: update stocks data $(date -u +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "chore: update stocks $(date -u +%Y-%m-%d)"
           git push
