@@ -1,5 +1,5 @@
 {
-  "updated": "2026-04-10",
+  "updated": "2026-04-13",
   "stocks": {
     "TLV": {
       "ticker": "TLV",
@@ -45,7 +45,7 @@
       "last_div_amount": 0.642,
       "last_div_ex_date": "2025-11-24",
       "last_div_yield": 2.18,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "SNP": {
       "ticker": "SNP",
@@ -106,7 +106,7 @@
       "last_div_amount": 0.02,
       "last_div_ex_date": "2025-11-10",
       "last_div_yield": 2.12,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "H2O": {
       "ticker": "H2O",
@@ -132,7 +132,7 @@
       "last_div_amount": 8.9889,
       "last_div_ex_date": "2025-06-03",
       "last_div_yield": 7.57,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "SNG": {
       "ticker": "SNG",
@@ -168,7 +168,7 @@
       "last_div_amount": 0.1568,
       "last_div_ex_date": "2025-07-03",
       "last_div_yield": 2.31,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "TGN": {
       "ticker": "TGN",
@@ -209,7 +209,7 @@
       "last_div_amount": 1.08,
       "last_div_ex_date": "2025-06-24",
       "last_div_yield": 3.1,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "TEL": {
       "ticker": "TEL",
@@ -245,7 +245,7 @@
       "last_div_amount": 3.81,
       "last_div_ex_date": "2025-07-10",
       "last_div_yield": 6.3,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "BRD": {
       "ticker": "BRD",
@@ -291,7 +291,7 @@
       "last_div_amount": 1.0581,
       "last_div_ex_date": "2025-05-12",
       "last_div_yield": 6.15,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "FP": {
       "ticker": "FP",
@@ -352,7 +352,7 @@
       "last_div_amount": 0.0123,
       "last_div_ex_date": "2025-11-03",
       "last_div_yield": 2.62,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "DIGI": {
       "ticker": "DIGI",
@@ -393,7 +393,7 @@
       "last_div_amount": 0.45,
       "last_div_ex_date": "2025-06-26",
       "last_div_yield": 1.85,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "ONE": {
       "ticker": "ONE",
@@ -454,7 +454,7 @@
       "last_div_amount": 0.36,
       "last_div_ex_date": "2025-11-03",
       "last_div_yield": 1.36,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "EL": {
       "ticker": "EL",
@@ -495,7 +495,7 @@
       "last_div_amount": 0.1767,
       "last_div_ex_date": "2025-06-03",
       "last_div_yield": 1.19,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "M": {
       "ticker": "M",
@@ -510,7 +510,7 @@
       "last_div_amount": null,
       "last_div_ex_date": null,
       "last_div_yield": null,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "SFG": {
       "ticker": "SFG",
@@ -566,7 +566,7 @@
       "last_div_amount": 1.04,
       "last_div_ex_date": "2025-11-24",
       "last_div_yield": 2.75,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "TTS": {
       "ticker": "TTS",
@@ -602,7 +602,7 @@
       "last_div_amount": 0.155,
       "last_div_ex_date": "2025-05-23",
       "last_div_yield": 3.81,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "COTE": {
       "ticker": "COTE",
@@ -643,7 +643,7 @@
       "last_div_amount": 6.7632,
       "last_div_ex_date": "2025-05-28",
       "last_div_yield": 8.33,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "AQ": {
       "ticker": "AQ",
@@ -684,7 +684,7 @@
       "last_div_amount": 0.0499,
       "last_div_ex_date": "2025-05-20",
       "last_div_yield": 3.48,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "WINE": {
       "ticker": "WINE",
@@ -725,7 +725,7 @@
       "last_div_amount": 0.65,
       "last_div_ex_date": "2025-09-01",
       "last_div_yield": 3.22,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "TRP": {
       "ticker": "TRP",
@@ -751,7 +751,7 @@
       "last_div_amount": 0.012,
       "last_div_ex_date": "2022-07-08",
       "last_div_yield": 2.26,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "BVB": {
       "ticker": "BVB",
@@ -787,7 +787,7 @@
       "last_div_amount": 1.3841,
       "last_div_ex_date": "2024-08-19",
       "last_div_yield": 2.42,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     },
     "ALR": {
       "ticker": "ALR",
@@ -802,7 +802,7 @@
       "last_div_amount": null,
       "last_div_ex_date": null,
       "last_div_yield": null,
-      "updated": "2026-04-10"
+      "updated": "2026-04-13"
     }
   }
 }
