@@ -1,26 +1,26 @@
 {
-  "score": 75.4,
+  "score": 75.3,
   "label_ro": "Lacomie",
   "label_en": "Greed",
-  "updated": "2026-06-03T12:35:51Z",
+  "updated": "2026-06-03T18:35:44Z",
   "updated_ro": "03 Jun 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 70.7,
+      "score": 70.4,
       "label": "Lacomie",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 150.99,
+      "price": 150.76,
       "sma_125": 134.31,
-      "pct_vs_sma": 12.41
+      "pct_vs_sma": 12.25
     },
     "volatility": {
       "score": 78.6,
       "label": "Lacomie",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 12.49
+      "annualized_vol_pct": 12.5
     },
     "breadth": {
       "score": 78.6,
