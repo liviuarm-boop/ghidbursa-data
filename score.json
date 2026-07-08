@@ -1,40 +1,40 @@
 {
-  "score": 82.3,
+  "score": 82.5,
   "label_ro": "Lacomie extrema",
   "label_en": "Extreme Greed",
-  "updated": "2026-07-08T16:18:24Z",
+  "updated": "2026-07-08T17:36:21Z",
   "updated_ro": "08 Jul 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 79.3,
-      "label": "Lacomie",
+      "score": 83.6,
+      "label": "Lacomie extrema",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 164.55,
-      "sma_125": 139.96,
-      "pct_vs_sma": 17.57
+      "price": 164.49,
+      "sma_125": 136.87,
+      "pct_vs_sma": 20.17
     },
     "volatility": {
-      "score": 68.6,
+      "score": 63.6,
       "label": "Lacomie",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 16.0
+      "annualized_vol_pct": 17.73
     },
     "breadth": {
       "score": 100.0,
       "label": "Lacomie extrema",
       "weight": "30%",
       "description": "% BET stocks above 50-day SMA",
-      "above_sma50": 12,
-      "total_stocks": 12
+      "above_sma50": 14,
+      "total_stocks": 14
     }
   },
   "data_quality": {
     "bet_source": "reconstructed",
     "bet_days": 183,
-    "components_ok": 12,
+    "components_ok": 14,
     "components_total": 14
   },
   "disclaimer": "Orientativ. Nu constituie consultanta financiara."
