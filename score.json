@@ -1,26 +1,26 @@
 {
-  "score": 82.9,
+  "score": 83.1,
   "label_ro": "Lacomie extrema",
   "label_en": "Extreme Greed",
-  "updated": "2026-07-09T10:47:15Z",
+  "updated": "2026-07-09T17:04:07Z",
   "updated_ro": "09 Jul 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 84.5,
+      "score": 85.2,
       "label": "Lacomie extrema",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 165.61,
+      "price": 166.22,
       "sma_125": 137.21,
-      "pct_vs_sma": 20.7
+      "pct_vs_sma": 21.14
     },
     "volatility": {
-      "score": 63.7,
+      "score": 63.5,
       "label": "Lacomie",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 17.71
+      "annualized_vol_pct": 17.77
     },
     "breadth": {
       "score": 100.0,
