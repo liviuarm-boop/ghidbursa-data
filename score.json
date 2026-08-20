@@ -1,39 +1,39 @@
 {
-  "score": 79.0,
+  "score": 76.9,
   "label_ro": "Lacomie",
   "label_en": "Greed",
-  "updated": "2026-08-20T08:27:56Z",
+  "updated": "2026-08-20T15:14:18Z",
   "updated_ro": "20 Aug 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 81.6,
-      "label": "Lacomie extrema",
+      "score": 79.7,
+      "label": "Lacomie",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 164.46,
-      "sma_125": 138.27,
-      "pct_vs_sma": 18.94
+      "price": 163.28,
+      "sma_125": 138.56,
+      "pct_vs_sma": 17.84
     },
     "volatility": {
-      "score": 76.1,
-      "label": "Lacomie",
-      "weight": "30%",
-      "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 13.36
-    },
-    "breadth": {
       "score": 78.6,
       "label": "Lacomie",
       "weight": "30%",
+      "description": "Annualized 20-day volatility",
+      "annualized_vol_pct": 12.5
+    },
+    "breadth": {
+      "score": 71.4,
+      "label": "Lacomie",
+      "weight": "30%",
       "description": "% BET stocks above 50-day SMA",
-      "above_sma50": 11,
+      "above_sma50": 10,
       "total_stocks": 14
     }
   },
   "data_quality": {
     "bet_source": "reconstructed",
-    "bet_days": 180,
+    "bet_days": 181,
     "components_ok": 14,
     "components_total": 14
   },
