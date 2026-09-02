@@ -1,26 +1,26 @@
 {
-  "score": 51.3,
+  "score": 51.4,
   "label_ro": "Neutru",
   "label_en": "Neutral",
-  "updated": "2026-09-02T12:25:17Z",
+  "updated": "2026-09-02T18:01:57Z",
   "updated_ro": "02 Sep 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 67.0,
+      "score": 65.4,
       "label": "Lacomie",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 154.93,
-      "sma_125": 140.62,
-      "pct_vs_sma": 10.17
+      "price": 153.57,
+      "sma_125": 140.61,
+      "pct_vs_sma": 9.22
     },
     "volatility": {
-      "score": 60.2,
+      "score": 62.6,
       "label": "Lacomie",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 18.94
+      "annualized_vol_pct": 18.08
     },
     "breadth": {
       "score": 21.4,
