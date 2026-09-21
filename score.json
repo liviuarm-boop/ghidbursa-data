@@ -1,26 +1,26 @@
 {
-  "score": 31.5,
+  "score": 31.1,
   "label_ro": "Frica",
   "label_en": "Fear",
-  "updated": "2026-09-21T14:43:17Z",
+  "updated": "2026-09-21T19:43:25Z",
   "updated_ro": "21 Sep 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 49.6,
+      "score": 49.3,
       "label": "Neutru",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 137.6,
+      "price": 137.3,
       "sma_125": 137.91,
-      "pct_vs_sma": -0.23
+      "pct_vs_sma": -0.45
     },
     "volatility": {
-      "score": 38.7,
+      "score": 38.1,
       "label": "Frica",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 26.46
+      "annualized_vol_pct": 26.68
     },
     "breadth": {
       "score": 0.0,
