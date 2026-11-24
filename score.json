@@ -1,39 +1,39 @@
 {
-  "score": 44.0,
-  "label_ro": "Neutru",
-  "label_en": "Neutral",
-  "updated": "2026-11-24T02:45:21Z",
+  "score": 62.9,
+  "label_ro": "Lacomie",
+  "label_en": "Greed",
+  "updated": "2026-11-24T19:14:34Z",
   "updated_ro": "24 Nov 2026",
   "method": "3 indicators",
   "indicators": {
     "momentum": {
-      "score": 53.0,
+      "score": 51.7,
       "label": "Neutru",
       "weight": "40%",
       "description": "BET price vs 125-day SMA",
-      "price": 122.13,
-      "sma_125": 119.98,
-      "pct_vs_sma": 1.79
+      "price": 122.35,
+      "sma_125": 121.13,
+      "pct_vs_sma": 1.01
     },
     "volatility": {
-      "score": 76.0,
+      "score": 76.4,
       "label": "Lacomie",
       "weight": "30%",
       "description": "Annualized 20-day volatility",
-      "annualized_vol_pct": 13.41
+      "annualized_vol_pct": 13.26
     },
     "breadth": {
-      "score": 0.0,
-      "label": "Frica extrema",
+      "score": 64.3,
+      "label": "Lacomie",
       "weight": "30%",
       "description": "% BET stocks above 50-day SMA",
-      "above_sma50": 0,
+      "above_sma50": 9,
       "total_stocks": 14
     }
   },
   "data_quality": {
     "bet_source": "reconstructed",
-    "bet_days": 191,
+    "bet_days": 192,
     "components_ok": 14,
     "components_total": 14
   },
